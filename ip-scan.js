@@ -36,7 +36,7 @@ if(!options.ip || !options.port) {
     process.exit(-1);
 }
 
-scan('192.168.1.0/24','21-23,80');
+scan(options.ip,options.port);
 
 function scan(sTarget, sPort) {
     var options = {
