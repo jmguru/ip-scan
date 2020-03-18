@@ -2,6 +2,9 @@ const evilscan = require('evilscan');
 const util = require('util');
 const commandLineArgs = require('command-line-args');
 const commandLineUsage = require('command-line-usage');
+const DEFAULT_IP='192.168.1.0/24';
+const DEFAULT_PORT='21-23/80';
+var usingDefaults=false;
 
 const optionDefinitions = [
     { name: 'ip', alias: 'i', type: String},
@@ -33,22 +36,27 @@ const usage = commandLineUsage(sections)
 
 if(!options.ip || !options.port) {
     console.log(usage);
-    process.exit(-1);
+    console.log('\n\nNo IP or port specified. Using defaults %s and %s\n\n',DEFAULT_IP,DEFAULT_PORT);
+    usingDefaults=true; 
 }
 
-scan(options.ip,options.port);
+if(usingDefaults==false)
+    scan(options.ip,options.port);
+else
+    scan(DEFAULT_IP,DEFAULT_PORT);
 
 function scan(sTarget, sPort) {
+
     var options = {
-        target: sTarget,
-        port: sPort,
+	target:sTarget, 
+        port:sPort,
         status:'TROU', // Timeout, Refused, Open, Unreachable
         banner:true
     };
-
+    
     var scanner = new evilscan(options);
-
-
+    
+    console.log('Scan Results:\n------------\n');
     scanner.on('result',function(data) {
       var rp = '';
 
